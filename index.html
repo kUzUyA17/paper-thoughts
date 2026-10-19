@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full overflow-hidden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paper Thoughts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.puter.com/v2/"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Playfair Display"', "Georgia", "serif"],
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body.font-sans {
+        font-family: Inter, sans-serif;
+      }
+
+      .font-serif {
+        font-family: "Playfair Display", Georgia, serif;
+      }
+
+      ::selection {
+        background: rgba(212, 163, 115, 0.35);
+        color: #1a1d24;
+      }
+
+      #chat {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(26, 29, 36, 0.22) transparent;
+      }
+
+      #chat::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      #chat::-webkit-scrollbar-thumb {
+        background: rgba(26, 29, 36, 0.22);
+        border-radius: 999px;
+      }
+
+      .typing-dot {
+        display: inline-block;
+        height: 0.375rem;
+        width: 0.375rem;
+        border-radius: 999px;
+        background: #d4a373;
+        animation: journal-dot 1.15s ease-in-out infinite;
+      }
+
+      @keyframes journal-dot {
+        0%,
+        80%,
+        100% {
+          opacity: 0.25;
+          transform: translateY(0);
+        }
+
+        40% {
+          opacity: 1;
+          transform: translateY(-3px);
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="relative flex h-screen flex-col overflow-hidden bg-[#F3F4F6] bg-[radial-gradient(ellipse_at_center,#FFFFFF,#E5E7EB)] font-sans text-[#1A1D24] antialiased"
+  >
+    <div class="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden md:block" aria-hidden="true">
+      <svg
+        class="absolute left-0 top-0 h-full w-12 text-[#D4A373] opacity-[0.1] md:w-24 lg:w-48"
+        viewBox="0 0 100 1200"
+        preserveAspectRatio="none"
+        fill="none"
+      >
+        <path
+          d="M18 0C28 67 28 133 18 200C8 267 8 333 18 400C28 467 28 533 18 600C8 667 8 733 18 800C28 867 28 933 18 1000C8 1067 8 1133 18 1200"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          vector-effect="non-scaling-stroke"
+        />
+        <path
+          d="M32 0C22 67 22 133 32 200C42 267 42 333 32 400C22 467 22 533 32 600C42 667 42 733 32 800C22 867 22 933 32 1000C42 1067 42 1133 32 1200"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+      <svg
+        class="absolute right-0 top-0 h-full w-12 scale-x-[-1] text-[#D4A373] opacity-[0.1] md:w-24 lg:w-48"
+        viewBox="0 0 100 1200"
+        preserveAspectRatio="none"
+        fill="none"
+      >
+        <path
+          d="M18 0C28 67 28 133 18 200C8 267 8 333 18 400C28 467 28 533 18 600C8 667 8 733 18 800C28 867 28 933 18 1000C8 1067 8 1133 18 1200"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          vector-effect="non-scaling-stroke"
+        />
+        <path
+          d="M32 0C22 67 22 133 32 200C42 267 42 333 32 400C22 467 22 533 32 600C42 667 42 733 32 800C22 867 22 933 32 1000C42 1067 42 1133 32 1200"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+
+    <header class="relative z-10 shrink-0 px-4 pb-2 pt-7 md:px-6">
+      <div class="mx-auto flex w-full max-w-2xl flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex w-full flex-col md:w-auto">
+          <h1 class="font-serif text-3xl italic text-[#1A1D24] md:text-4xl">
+            <span class="lang-en">Paper Thoughts</span>
+            <span class="lang-ru hidden">Мысли на бумаге</span>
+          </h1>
+          <p class="mt-1 text-sm text-gray-500">
+            <span class="lang-en">A safe space for your mind</span>
+            <span class="lang-ru hidden">Безопасное место для ваших мыслей</span>
+          </p>
+        </div>
+        <div class="flex flex-row flex-wrap items-center gap-4">
+          <button
+            type="button"
+            id="summary"
+            class="text-sm font-medium text-[#D4A373] transition-opacity hover:opacity-80 disabled:opacity-35"
+          >
+            <span class="lang-en">Make a Summary</span>
+            <span class="lang-ru hidden">Сделать вывод</span>
+          </button>
+          <button
+            type="button"
+            id="clear"
+            class="text-sm text-gray-500 transition-colors hover:text-[#1A1D24]"
+          >
+            <span class="lang-en">Clear</span>
+            <span class="lang-ru hidden">Очистить</span>
+          </button>
+          <button
+            type="button"
+            id="lang-toggle"
+            class="text-xs font-medium tracking-[0.14em] text-gray-500 transition-colors hover:text-[#D4A373]"
+            aria-label="Switch language"
+          >
+            <span class="lang-en">RU</span>
+            <span class="lang-ru hidden">EN</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main
+      id="chat"
+      class="relative z-10 mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col justify-start gap-6 overflow-y-auto px-4 py-6 md:px-0"
+      aria-live="polite"
+      aria-relevant="additions"
+    ></main>
+
+    <form id="composer-form" class="sticky bottom-0 z-10 shrink-0 px-4 pb-4 pt-2">
+      <div
+        class="mx-auto flex w-full max-w-2xl items-end gap-3 rounded-2xl bg-[#FFFFFF] px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)]"
+      >
+        <label for="composer" class="sr-only">
+          <span class="lang-en">Write your thoughts</span>
+          <span class="lang-ru hidden">Напишите свои мысли</span>
+        </label>
+        <div class="sr-only" aria-hidden="true">
+          <span class="lang-en" data-placeholder>Write your thoughts...</span>
+          <span class="lang-ru hidden" data-placeholder>Напишите свои мысли...</span>
+        </div>
+        <textarea
+          id="composer"
+          rows="1"
+          placeholder="Write your thoughts..."
+          enterkeyhint="send"
+          class="w-full flex-1 resize-none border-0 bg-transparent px-1 py-2 font-sans text-[15px] leading-relaxed text-[#1A1D24] outline-none placeholder:text-gray-400"
+        ></textarea>
+        <button
+          type="submit"
+          id="send"
+          disabled
+          class="mb-1 shrink-0 px-2 text-sm font-medium text-[#D4A373] transition-opacity hover:opacity-80 disabled:cursor-default disabled:opacity-35"
+        >
+          <span class="lang-en">Send</span>
+          <span class="lang-ru hidden">Отправить</span>
+        </button>
+      </div>
+    </form>
+
+    <div
+      id="summary-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center px-5"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="summary-title"
+      hidden
+    >
+      <button
+        type="button"
+        id="summary-backdrop"
+        class="absolute inset-0 bg-[#1A1D24]/25"
+        aria-label="Close"
+      ></button>
+      <div
+        class="relative w-full max-w-lg rounded-2xl border-l-4 border-[#D4A373] bg-[#FFFFFF] px-7 py-7 shadow-[0_16px_40px_rgba(26,29,36,0.12)]"
+      >
+        <div class="flex items-start justify-between gap-4">
+          <h2 id="summary-title" class="font-serif text-2xl italic text-[#1A1D24]">
+            <span class="lang-en">A gentle reading</span>
+            <span class="lang-ru hidden">Мягкий вывод</span>
+          </h2>
+          <button
+            type="button"
+            id="summary-close"
+            class="shrink-0 text-sm text-gray-500 transition-colors hover:text-[#1A1D24]"
+          >
+            <span class="lang-en">Close</span>
+            <span class="lang-ru hidden">Закрыть</span>
+          </button>
+        </div>
+        <div
+          id="summary-body"
+          class="mt-5 font-sans text-[15px] leading-relaxed text-[#1A1D24]"
+        ></div>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_KEY = "deep-journal.messages";
+      const LANG_KEY = "deep-journal.lang";
+      const CONTEXT_LIMIT = 5;
+      const SUMMARY_PROMPT =
+        "Analyze these journal entries. Identify the core emotion and provide one gentle, supportive insight. Keep it under 3 sentences. Reply in the same language as the entries.";
+      const MAX_ROWS = 4;
+      const SYSTEM_PROMPT =
+        "You are a close, supportive friend. The user is writing a journal. STRICT RULES: NO CLICHÉS: Never start with \"I understand why...\" or \"That sounds heavy...\". BE CONCISE: Keep your responses to 1-2 short sentences max. Like a text message. NORMALIZE: Instead of analyzing their feelings, normalize them. (e.g., 'Ugh, waiting an hour for a report is torture. I'd be impatient too.') REACT: React like a friend. If they share a problem, say 'That sucks' or 'No wonder you're annoyed'. You don't have to ask a deep question every time. Sometimes just agreeing is enough. NO REPETITION: Do not repeat their exact words back to them. Reply in the same language as the user.";
+      const ERROR_EN = "Connection lost. Please try again.";
+      const ERROR_RU = "Связь потеряна. Попробуйте ещё раз.";
+      const WELCOME_EN =
+        "Welcome back. I'm here to listen. Would you like to continue where we left off, or start fresh?";
+      const WELCOME_RU =
+        "С возвращением. Я здесь, чтобы слушать. Хотите продолжить с того места, где мы остановились, или начать заново?";
+      const AI_BUBBLE =
+        "max-w-[90%] whitespace-pre-wrap break-words rounded-r-2xl border-l-4 border-[#D4A373] bg-[#FFFFFF] px-4 py-3 font-sans text-[15px] leading-relaxed text-[#1A1D24] shadow-[0_2px_12px_rgba(26,29,36,0.06)]";
+
+      const chat = document.getElementById("chat");
+      const form = document.getElementById("composer-form");
+      const composer = document.getElementById("composer");
+      const sendButton = document.getElementById("send");
+      const clearButton = document.getElementById("clear");
+      const langToggle = document.getElementById("lang-toggle");
+      const summaryButton = document.getElementById("summary");
+      const summaryModal = document.getElementById("summary-modal");
+      const summaryBody = document.getElementById("summary-body");
+      const summaryClose = document.getElementById("summary-close");
+      const summaryBackdrop = document.getElementById("summary-backdrop");
+
+      let messages = loadMessages();
+      let showWelcome = messages.length > 0;
+      let language = "en";
+      let pending = false;
+      let requestId = 0;
+
+      function loadMessages() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          const now = Date.now();
+          return parsed
+            .filter(
+              (message) =>
+                message &&
+                (message.role === "user" || message.role === "assistant") &&
+                typeof message.text === "string"
+            )
+            .map((message, index, list) => ({
+              role: message.role,
+              text: message.text,
+              timestamp:
+                typeof message.timestamp === "string" ||
+                typeof message.timestamp === "number"
+                  ? message.timestamp
+                  : new Date(now - (list.length - index) * 1000).toISOString(),
+              ...(message.error ? { error: true } : {}),
+            }));
+        } catch {
+          return [];
+        }
+      }
+
+      function saveMessages() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+        } catch {
+          // Persistence is best-effort if storage is unavailable.
+        }
+      }
+
+      function setLanguage(next) {
+        language = next === "ru" ? "ru" : "en";
+        document.documentElement.lang = language;
+        document.title = language === "ru" ? "Мысли на бумаге" : "Paper Thoughts";
+
+        document.querySelectorAll(".lang-en").forEach((el) => {
+          el.classList.toggle("hidden", language !== "en");
+        });
+        document.querySelectorAll(".lang-ru").forEach((el) => {
+          el.classList.toggle("hidden", language !== "ru");
+        });
+
+        const placeholder = document.querySelector(
+          `[data-placeholder].lang-${language}`
+        );
+        if (placeholder) composer.placeholder = placeholder.textContent;
+
+        langToggle.setAttribute(
+          "aria-label",
+          language === "ru" ? "Переключить на английский" : "Switch to Russian"
+        );
+        summaryBackdrop.setAttribute(
+          "aria-label",
+          language === "ru" ? "Закрыть" : "Close"
+        );
+
+        try {
+          localStorage.setItem(LANG_KEY, language);
+        } catch {
+          // Language still applies for this visit.
+        }
+      }
+
+      function toggleLanguage() {
+        setLanguage(language === "en" ? "ru" : "en");
+      }
+
+      function resizeComposer() {
+        composer.style.height = "auto";
+        const style = window.getComputedStyle(composer);
+        const lineHeight = parseFloat(style.lineHeight) || 24;
+        const padding =
+          parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+        const border =
+          parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+        const maxHeight = lineHeight * MAX_ROWS + padding + border;
+        const nextHeight = Math.min(composer.scrollHeight, maxHeight);
+        composer.style.height = nextHeight + "px";
+        composer.style.overflowY =
+          composer.scrollHeight > maxHeight + 1 ? "auto" : "hidden";
+      }
+
+      function syncSendButton() {
+        sendButton.disabled = pending || composer.value.trim().length === 0;
+      }
+
+      function scrollToBottom() {
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      function bilingual(en, ru) {
+        const enSpan = document.createElement("span");
+        enSpan.className = "lang-en" + (language === "en" ? "" : " hidden");
+        enSpan.textContent = en;
+
+        const ruSpan = document.createElement("span");
+        ruSpan.className = "lang-ru" + (language === "ru" ? "" : " hidden");
+        ruSpan.textContent = ru;
+
+        const fragment = document.createDocumentFragment();
+        fragment.append(enSpan, ruSpan);
+        return fragment;
+      }
+
+      function appendTyping() {
+        const row = document.createElement("div");
+        row.className = "flex justify-start";
+        row.setAttribute("data-typing", "true");
+
+        const bubble = document.createElement("div");
+        bubble.className =
+          "flex items-center gap-1.5 rounded-r-2xl border-l-4 border-[#D4A373] bg-[#FFFFFF] px-4 py-4 shadow-[0_2px_12px_rgba(26,29,36,0.06)]";
+        bubble.setAttribute("role", "status");
+
+        for (let index = 0; index < 3; index += 1) {
+          const dot = document.createElement("span");
+          dot.className = "typing-dot";
+          dot.style.animationDelay = `${index * 0.15}s`;
+          bubble.append(dot);
+        }
+
+        const status = document.createElement("span");
+        status.className = "sr-only";
+        status.append(bilingual("Writing a reply", "Пишу ответ"));
+        bubble.append(status);
+        row.append(bubble);
+        chat.append(row);
+      }
+
+      function appendWelcome() {
+        const row = document.createElement("div");
+        row.className = "flex justify-start";
+
+        const bubble = document.createElement("div");
+        bubble.className = AI_BUBBLE;
+        bubble.append(bilingual(WELCOME_EN, WELCOME_RU));
+        row.append(bubble);
+        chat.append(row);
+      }
+
+      function render(scrollMode = "bottom") {
+        chat.replaceChildren();
+
+        if (messages.length === 0 && !pending && !showWelcome) return;
+
+        if (showWelcome) appendWelcome();
+
+        for (const message of messages) {
+          const row = document.createElement("div");
+          row.className =
+            message.role === "user" ? "flex justify-end" : "flex justify-start";
+
+          const bubble = document.createElement("div");
+          bubble.className =
+            message.role === "user"
+              ? "max-w-[80%] whitespace-pre-wrap break-words rounded-2xl rounded-tr-none bg-[#E8DCC8] px-4 py-3 font-sans text-[15px] leading-relaxed text-[#1A1D24] shadow-[0_4px_16px_rgba(26,29,36,0.07)]"
+              : AI_BUBBLE;
+
+          if (message.error) {
+            bubble.append(bilingual(ERROR_EN, ERROR_RU));
+          } else {
+            bubble.textContent = message.text;
+          }
+
+          row.append(bubble);
+          chat.append(row);
+        }
+
+        if (pending) appendTyping();
+        requestAnimationFrame(() => {
+          if (scrollMode === "top") chat.scrollTop = 0;
+          else scrollToBottom();
+        });
+      }
+
+      function readReply(response) {
+        if (typeof response === "string") return response.trim();
+        const content = response?.message?.content ?? response?.text ?? "";
+        if (typeof content === "string") return content.trim();
+        if (Array.isArray(content)) {
+          return content
+            .map((part) => (typeof part === "string" ? part : part?.text || ""))
+            .join("")
+            .trim();
+        }
+        return "";
+      }
+
+      async function requestReflection() {
+        if (!window.puter?.ai?.chat) {
+          throw new Error("Puter unavailable");
+        }
+
+        const context = messages
+          .filter((message) => !message.error)
+          .slice(-CONTEXT_LIMIT)
+          .map((message) => ({ role: message.role, content: message.text }));
+
+        const response = await puter.ai.chat(
+          [{ role: "system", content: SYSTEM_PROMPT }, ...context],
+          { model: "gpt-5-nano", normalize: true }
+        );
+
+        const reply = readReply(response);
+        if (!reply) throw new Error("Empty reply");
+        return reply;
+      }
+
+      async function submitMessage() {
+        const text = composer.value.trim();
+        if (!text || pending) return;
+
+        const id = ++requestId;
+        pending = true;
+        messages.push({
+          role: "user",
+          text,
+          timestamp: new Date().toISOString(),
+        });
+        saveMessages();
+
+        composer.value = "";
+        resizeComposer();
+        syncSendButton();
+        render();
+        composer.focus();
+
+        try {
+          const reply = await requestReflection();
+          if (id !== requestId) return;
+          messages.push({
+            role: "assistant",
+            text: reply,
+            timestamp: new Date().toISOString(),
+          });
+        } catch {
+          if (id !== requestId) return;
+          messages.push({
+            role: "assistant",
+            text: ERROR_EN,
+            error: true,
+            timestamp: new Date().toISOString(),
+          });
+        } finally {
+          if (id === requestId) {
+            pending = false;
+            saveMessages();
+            syncSendButton();
+            render();
+            composer.focus();
+          }
+        }
+      }
+
+      composer.addEventListener("input", () => {
+        resizeComposer();
+        syncSendButton();
+      });
+
+      composer.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" || event.shiftKey || event.isComposing) return;
+        event.preventDefault();
+        submitMessage();
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        submitMessage();
+      });
+
+      function openSummaryModal() {
+        summaryModal.hidden = false;
+        summaryModal.classList.remove("hidden");
+        summaryModal.classList.add("flex");
+        summaryClose.focus();
+        document.addEventListener("keydown", onSummaryKey);
+      }
+
+      function closeSummaryModal() {
+        summaryModal.hidden = true;
+        summaryModal.classList.add("hidden");
+        summaryModal.classList.remove("flex");
+        document.removeEventListener("keydown", onSummaryKey);
+        summaryButton.focus();
+      }
+
+      function onSummaryKey(event) {
+        if (event.key === "Escape") closeSummaryModal();
+      }
+
+      function showSummaryMessage(en, ru) {
+        summaryBody.replaceChildren(bilingual(en, ru));
+      }
+
+      function showSummaryDots() {
+        summaryBody.replaceChildren();
+        const row = document.createElement("div");
+        row.className = "flex items-center gap-1.5 py-1";
+        row.setAttribute("role", "status");
+        for (let index = 0; index < 3; index += 1) {
+          const dot = document.createElement("span");
+          dot.className = "typing-dot";
+          dot.style.animationDelay = `${index * 0.15}s`;
+          row.append(dot);
+        }
+        const status = document.createElement("span");
+        status.className = "sr-only";
+        status.append(bilingual("Reading your journal", "Читаю дневник"));
+        row.append(status);
+        summaryBody.append(row);
+      }
+
+      async function makeSummary() {
+        const entries = messages
+          .filter((message) => message.role === "user" && !message.error)
+          .map((message) => message.text.trim())
+          .filter(Boolean);
+
+        openSummaryModal();
+
+        if (entries.length === 0) {
+          showSummaryMessage(
+            "Write a few thoughts first.",
+            "Сначала напишите несколько мыслей."
+          );
+          return;
+        }
+
+        summaryButton.disabled = true;
+        showSummaryDots();
+
+        try {
+          if (!window.puter?.ai?.chat) throw new Error("Puter unavailable");
+
+          const response = await puter.ai.chat(
+            [
+              { role: "system", content: SUMMARY_PROMPT },
+              {
+                role: "user",
+                content: entries.map((entry, index) => `${index + 1}. ${entry}`).join("\n"),
+              },
+            ],
+            { model: "gpt-5-nano", normalize: true }
+          );
+
+          const insight = readReply(response);
+          if (!insight) throw new Error("Empty summary");
+          summaryBody.textContent = insight;
+        } catch {
+          showSummaryMessage(ERROR_EN, ERROR_RU);
+        } finally {
+          summaryButton.disabled = false;
+        }
+      }
+
+      langToggle.addEventListener("click", toggleLanguage);
+      summaryButton.addEventListener("click", makeSummary);
+      summaryClose.addEventListener("click", closeSummaryModal);
+      summaryBackdrop.addEventListener("click", closeSummaryModal);
+
+      clearButton.addEventListener("click", () => {
+        if (messages.length === 0 && !pending) return;
+        const confirmed = window.confirm(
+          language === "ru"
+            ? "Очистить дневник? Это удалит все сообщения на этом устройстве."
+            : "Clear your journal? This removes every message on this device."
+        );
+        if (!confirmed) return;
+        requestId += 1;
+        pending = false;
+        showWelcome = false;
+        messages = [];
+        saveMessages();
+        syncSendButton();
+        render();
+        composer.focus();
+      });
+
+      try {
+        const savedLang = localStorage.getItem(LANG_KEY);
+        setLanguage(savedLang === "ru" ? "ru" : "en");
+      } catch {
+        setLanguage("en");
+      }
+
+      resizeComposer();
+      syncSendButton();
+      render(showWelcome ? "top" : "bottom");
+      saveMessages();
+      composer.focus();
+    </script>
+  </body>
+</html>
